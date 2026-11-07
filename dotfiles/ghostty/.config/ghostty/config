@@ -1,0 +1,21 @@
+# Ghostty — https://ghostty.org/docs/config
+theme = TokyoNight Night
+
+font-family = JetBrainsMono Nerd Font
+font-size = 12
+
+# carried over from the old GNOME Terminal profile (14% transparent)
+background-opacity = 0.86
+
+window-padding-x = 10
+window-padding-y = 8
+window-padding-balance = true
+window-inherit-working-directory = true
+
+cursor-style = bar
+cursor-style-blink = true
+mouse-hide-while-typing = true
+copy-on-select = false
+confirm-close-surface = false
+
+shell-integration = detect

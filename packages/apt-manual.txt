@@ -4,7 +4,6 @@ apt-transport-https
 autoconf
 base-passwd
 bison
-blueman
 brave-browser
 bsdutils
 build-essential
@@ -29,6 +28,7 @@ forticlient
 fzf
 gcc
 gh
+ghostty
 git
 gnome-bluetooth-sendto
 gnome-shell-extensions
@@ -117,13 +117,14 @@ php-cli
 php-curl
 php-xml
 php-zip
-piper
 python3-pip
 shim-signed
 software-properties-common
+starship
 steam-launcher
 steam-libs-amd64
 steam-libs-i386:i386
+stow
 thunderbird-locale-en
 thunderbird-locale-en-us
 tlauncher-linux-installer

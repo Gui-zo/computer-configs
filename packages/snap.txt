@@ -5,12 +5,10 @@ docker latest/stable
 firefox latest/stable
 firmware-updater 1/stable/…
 gnome-3-28-1804 latest/stable
-gnome-3-34-1804 latest/stable
 gnome-3-38-2004 latest/stable
 gnome-42-2204 latest/stable/…
 gnome-46-2404 latest/stable
 gnome-mines latest/stable
-gotop latest/stable
 gtk-common-themes latest/stable/…
 mesa-2404 latest/stable
 onedrive-cli latest/stable
