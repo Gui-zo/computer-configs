@@ -1,14 +1,28 @@
 #!/usr/bin/env python3
 """Generate a Tokyo Night mountains wallpaper. Deterministic (fixed seed).
 
-usage: python3 wallpapers/generate.py [out.png] [width] [height]
+usage: python3 wallpapers/generate.py [palette] [width] [height]
+  palette: mono (default) | tokyo   -> wallpapers/<name>-mountains.png
 """
 import random
 import sys
 
 from PIL import Image, ImageDraw, ImageFilter
 
-OUT = sys.argv[1] if len(sys.argv) > 1 else "wallpapers/tokyo-night-mountains.png"
+PALETTES = {
+    "mono": dict(
+        sky=[(0.0, "#050505"), (0.45, "#0a0a0a"), (0.70, "#141414"), (0.85, "#232323"), (1.0, "#2a2a2a")],
+        stars=["#e6e6e6", "#e6e6e6", "#bdbdbd", "#9e9e9e"], glow="#d0d0d0", moon="#ececec",
+        ridges=["#2b2b2b", "#1f1f1f", "#141414", "#0a0a0a"],
+        out="wallpapers/mono-mountains.png"),
+    "tokyo": dict(
+        sky=[(0.0, "#16161e"), (0.35, "#1a1b26"), (0.55, "#24283b"), (0.68, "#3d3f72"), (0.80, "#6b4f9a"), (1.0, "#6b4f9a")],
+        stars=["#c0caf5", "#c0caf5", "#7dcfff", "#bb9af7"], glow="#7aa2f7", moon="#c0caf5",
+        ridges=["#414868", "#2f334d", "#24283b", "#16161e"],
+        out="wallpapers/tokyo-night-mountains.png"),
+}
+PAL = PALETTES[sys.argv[1] if len(sys.argv) > 1 else "mono"]
+OUT = PAL["out"]
 W = int(sys.argv[2]) if len(sys.argv) > 2 else 2560
 H = int(sys.argv[3]) if len(sys.argv) > 3 else 1440
 random.seed(1337)
@@ -23,8 +37,8 @@ def lerp(a, b, t):
     return tuple(round(x + (y - x) * t) for x, y in zip(a, b))
 
 
-# --- sky gradient: night bg -> storm -> faint purple/blue glow at horizon ---
-stops = [(0.0, "#16161e"), (0.35, "#1a1b26"), (0.55, "#24283b"), (0.68, "#3d3f72"), (0.80, "#6b4f9a"), (1.0, "#6b4f9a")]
+# --- sky gradient ---
+stops = PAL["sky"]
 sky = Image.new("RGB", (W, H))
 px = sky.load()
 for y in range(H):
@@ -44,17 +58,17 @@ for _ in range(int(W * H / 5000)):
     x, y = random.randrange(W), random.randrange(int(H * 0.65))
     r = random.choice([1, 1, 1, 1.5, 2])
     a = random.randint(60, 200)
-    col = random.choice(["#c0caf5", "#c0caf5", "#7dcfff", "#bb9af7"])
+    col = random.choice(PAL["stars"])
     d.ellipse([x - r, y - r, x + r, y + r], fill=hex2rgb(col) + (a,))
 img = Image.alpha_composite(img, stars)
 
 # --- moon with glow ---
 mx, my, mr = int(W * 0.74), int(H * 0.24), int(H * 0.055)
 glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-ImageDraw.Draw(glow).ellipse([mx - mr * 4, my - mr * 4, mx + mr * 4, my + mr * 4], fill=hex2rgb("#7aa2f7") + (55,))
+ImageDraw.Draw(glow).ellipse([mx - mr * 4, my - mr * 4, mx + mr * 4, my + mr * 4], fill=hex2rgb(PAL["glow"]) + (40,))
 img = Image.alpha_composite(img, glow.filter(ImageFilter.GaussianBlur(mr * 1.6)))
 moon = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-ImageDraw.Draw(moon).ellipse([mx - mr, my - mr, mx + mr, my + mr], fill=hex2rgb("#c0caf5") + (240,))
+ImageDraw.Draw(moon).ellipse([mx - mr, my - mr, mx + mr, my + mr], fill=hex2rgb(PAL["moon"]) + (240,))
 img = Image.alpha_composite(img, moon.filter(ImageFilter.GaussianBlur(1.2)))
 
 
@@ -73,10 +87,10 @@ def ridge(base, rough, seg=8, peaks=6):
 
 
 layers = [  # (baseline, roughness, color, alpha, haze blur)
-    (0.66, 0.11, "#414868", 235, 2),
-    (0.74, 0.09, "#2f334d", 255, 1),
-    (0.83, 0.07, "#24283b", 255, 0),
-    (0.92, 0.05, "#16161e", 255, 0),
+    (0.66, 0.11, PAL["ridges"][0], 235, 2),
+    (0.74, 0.09, PAL["ridges"][1], 255, 1),
+    (0.83, 0.07, PAL["ridges"][2], 255, 0),
+    (0.92, 0.05, PAL["ridges"][3], 255, 0),
 ]
 for base, rough, col, a, blur in layers:
     layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))

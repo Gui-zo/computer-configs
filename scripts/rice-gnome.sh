@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Apply the Tokyo Night GNOME look: GTK theme, extensions, wallpaper, settings.
+# Apply the black/mono GNOME look: GTK + shell theme, icons, extensions, wallpaper, settings.
 # Prereqs (sudo): apt install papirus-icon-theme bibata-cursor-theme sassc
 # Undo: ./scripts/restore-gnome.sh (loads the pre-rice snapshot in gnome/dconf/)
 set -euo pipefail
@@ -20,13 +20,16 @@ EXTENSIONS=(
   caffeine@patapon.info
 )
 
-# --- GTK theme (Tokyonight, links gtk-4.0 for libadwaita apps) ---
-if [ ! -d ~/.themes/Tokyonight-Dark ]; then
+# --- GTK + shell theme (Tokyonight Grey variant, black tweak; links gtk-4.0 for libadwaita apps) ---
+if [ ! -d ~/.themes/Tokyonight-Grey-Dark ]; then
   git clone -q --depth 1 https://github.com/Fausto-Korpsvart/Tokyonight-GTK-Theme.git "$TMP/tokyonight"
   [ -z "$(ls -A ~/.config/gtk-4.0 2>/dev/null)" ] || cp -a ~/.config/gtk-4.0 "$REPO/.gtk-4.0.pre-rice.bak"
-  (cd "$TMP/tokyonight/themes" && ./install.sh -c dark -l >/dev/null)
+  (cd "$TMP/tokyonight/themes" && ./install.sh -t grey -c dark --tweaks black -l >/dev/null)
   echo "installed GTK theme: $(ls ~/.themes | grep -i tokyonight | tr '\n' ' ')"
 fi
+
+# --- Icons: Papirus-Dark with black folders (user-level) ---
+"$REPO/scripts/papirus-black.sh" black
 
 # --- Extensions from extensions.gnome.org (for this shell version) ---
 for uuid in "${EXTENSIONS[@]}"; do
@@ -43,8 +46,8 @@ done
 
 # --- Wallpaper ---
 mkdir -p ~/.local/share/backgrounds
-cp "$REPO/wallpapers/tokyo-night-mountains.png" ~/.local/share/backgrounds/
-WP="file://$HOME/.local/share/backgrounds/tokyo-night-mountains.png"
+cp "$REPO/wallpapers/mono-mountains.png" ~/.local/share/backgrounds/
+WP="file://$HOME/.local/share/backgrounds/mono-mountains.png"
 dconf write /org/gnome/desktop/background/picture-uri "'$WP'"
 dconf write /org/gnome/desktop/background/picture-uri-dark "'$WP'"
 dconf write /org/gnome/desktop/screensaver/picture-uri "'$WP'"
