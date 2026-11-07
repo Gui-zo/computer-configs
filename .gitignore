@@ -1,0 +1,22 @@
+# Never commit secrets or session data
+*.key
+*.pem
+*token*
+*secret*
+.env
+.env.*
+**/gh/hosts.yml
+**/BraveSoftware/
+**/google-chrome/
+**/.mozilla/
+**/FortiClient/
+**/ngrok/
+**/configstore/
+**/.ssh/
+**/.gnupg/
+**/.aws/
+
+# Local scratch
+*.bak
+*.tmp
+*.local.*
