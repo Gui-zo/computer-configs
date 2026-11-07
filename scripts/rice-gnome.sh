@@ -30,10 +30,13 @@ fi
 
 # --- Extensions from extensions.gnome.org (for this shell version) ---
 for uuid in "${EXTENSIONS[@]}"; do
-  if [ -d ~/.local/share/gnome-shell/extensions/"$uuid" ]; then continue; fi
-  url="$(curl -fsS "https://extensions.gnome.org/extension-info/?uuid=$uuid&shell_version=$SHELL_VER" \
-        | python3 -c 'import sys,json; print(json.load(sys.stdin)["download_url"])')"
-  curl -fsSL -o "$TMP/$uuid.zip" "https://extensions.gnome.org$url"
+  if [ "$(gnome-extensions info "$uuid" 2>/dev/null | awk -F': ' '/State/{print $2}')" = "ACTIVE" ]; then continue; fi
+  # NB: ?shell_version= silently falls back to the newest release even if it
+  # doesn't support this shell, so check shell_version_map explicitly.
+  pk="$(curl -fsS "https://extensions.gnome.org/extension-info/?uuid=$uuid" \
+        | /usr/bin/python3 -c 'import sys,json; print(json.load(sys.stdin)["shell_version_map"].get(sys.argv[1],{}).get("pk",""))' "$SHELL_VER")"
+  if [ -z "$pk" ]; then echo "SKIP $uuid: no release for GNOME $SHELL_VER yet"; continue; fi
+  curl -fsSL -o "$TMP/$uuid.zip" "https://extensions.gnome.org/download-extension/$uuid.shell-extension.zip?version_tag=$pk"
   gnome-extensions install --force "$TMP/$uuid.zip"
   echo "installed $uuid"
 done

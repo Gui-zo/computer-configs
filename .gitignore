@@ -20,3 +20,6 @@
 *.bak
 *.tmp
 *.local.*
+
+# Forge regenerates its stylesheet here
+dotfiles/forge/.config/forge/stylesheet/
