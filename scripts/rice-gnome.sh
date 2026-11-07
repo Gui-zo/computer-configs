@@ -13,7 +13,7 @@ EXTENSIONS=(
   monitor@astraext.github.io
   space-bar@luchrioh
   openbar@neuromorph
-  forge@jmmaranan.com
+  tilingshell@ferrarodomenico.com
   rounded-window-corners@fxgn
   mediacontrols@cliffniff.github.com
   clipboard-indicator@tudmotu.com

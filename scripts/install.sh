@@ -3,7 +3,7 @@
 # Prereqs (sudo): apt install ghostty starship stow
 set -euo pipefail
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-PACKAGES=(ghostty bash starship forge)
+PACKAGES=(ghostty bash starship)
 
 # --- Nerd Font (user-level) ---
 if ! fc-list | grep -qi "JetBrainsMono Nerd Font"; then
